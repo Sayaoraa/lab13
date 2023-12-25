@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+
+bool isVowel(char c) {
+    c = tolower(c);
+    return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
+}
+
+bool hasOverlappingConsonants(char* word1, char* word2) {
+    int length1 = strlen(word1);
+    int length2 = strlen(word2);
+
+    // Проверка пересечения согласных
+    for (int i = 0; i < length1; i++) {
+        if (!isVowel(word1[i])) {
+            for (int j = 0; j < length2; j++) {
+                if (!isVowel(word2[j]) && word1[i] == word2[j]) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    char input[100];
+    printf("Введите строку: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Удаление символа новой строки из ввода
+    input[strcspn(input, "\n")] = '\0';
+
+    char* word;
+    char* prevWord = NULL;
+    bool found = false;
+
+    word = strtok(input, " ");
+
+    while (word != NULL) {
+        if (prevWord != NULL && hasOverlappingConsonants(prevWord, word)) {
+            found = true;
+            break;
+        }
+
+        prevWord = word;
+        word = strtok(NULL, " ");
+    }
+
+    if (found) {
+        printf("В строке есть два соседних слова с пересекающимся набором согласных.\n");
+    } else {
+        printf("В строке нет двух соседних слов с пересекающимся набором согласных.\n");
+    }
+
+    return 0;
+}
